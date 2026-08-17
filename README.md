@@ -72,30 +72,44 @@ The project combines **multi-modal representation learning** with **unsupervised
 
 The overall pipeline can be summarized as:
 
-```mermaid
-flowchart TD
-    S["Labeled Source Domain<br/>CrisisMMD"]
-    T["Unlabeled Target Domain<br/>SCW2025"]
-
-    S --> ST["Text + Image"]
-    T --> TT["Text + Image"]
-
-    ST --> CLIP["CLIP ViT-L/14<br/>Multi-Modal Representation"]
-    TT --> CLIP
-
-    CLIP --> FG["Shared Feature Generator"]
-
-    FG --> DA["Domain Alignment"]
-    FG --> CD["Class Discrimination"]
-
-    DA --> DB["Dynamic Objective Balancing"]
-    CD --> DB
-
-    DB --> C["Post Classification"]
-
-    C --> I["Informative"]
-    C --> NI["Non-informative"]
-
+    SOURCE DOMAIN                         TARGET DOMAIN
+     CrisisMMD                              SCW2025
+   (Labeled Data)                        (Unlabeled Data)
+         │                                      │
+   ┌─────┴─────┐                          ┌─────┴─────┐
+   │           │                          │           │
+  Text       Image                      Text       Image
+   │           │                          │           │
+   └─────┬─────┘                          └─────┬─────┘
+         │                                      │
+         └──────────────┬───────────────────────┘
+                        │
+                        ▼
+                 CLIP Encoders
+                        │
+                        ▼
+               Multi-Modal Features
+                        │
+                        ▼
+                 Feature Generator
+                        │
+             ┌──────────┴──────────┐
+             │                     │
+             ▼                     ▼
+      Domain Alignment     Class Discrimination
+             │                     │
+             └──────────┬──────────┘
+                        │
+                        ▼
+               Dynamic Objective
+                  Balancing
+                        │
+                        ▼
+                Post Classification
+                        │
+               ┌────────┴────────┐
+               ▼                 ▼
+          Informative      Non-informative
 
 The image and text components of each post are encoded independently using a pretrained **CLIP ViT-L/14** model. The resulting representations are combined to obtain a joint multi-modal representation.
 
@@ -108,7 +122,6 @@ The shared representation is optimized using complementary objectives:
 The detailed formulation of these objectives is intentionally omitted while the associated research paper is under review.
 
 ---
-
 ## Multi-Modal Representation
 
 Each post is treated as an **image-text pair**, allowing the model to exploit complementary information from both modalities.
