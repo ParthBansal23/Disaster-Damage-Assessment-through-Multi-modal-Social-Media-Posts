@@ -72,44 +72,46 @@ The project combines **multi-modal representation learning** with **unsupervised
 
 The overall pipeline can be summarized as:
 
-    SOURCE DOMAIN                         TARGET DOMAIN
-     CrisisMMD                              SCW2025
-   (Labeled Data)                        (Unlabeled Data)
-         │                                      │
-   ┌─────┴─────┐                          ┌─────┴─────┐
-   │           │                          │           │
-  Text       Image                      Text       Image
-   │           │                          │           │
-   └─────┬─────┘                          └─────┬─────┘
-         │                                      │
-         └──────────────┬───────────────────────┘
-                        │
-                        ▼
-                 CLIP Encoders
-                        │
-                        ▼
-               Multi-Modal Features
-                        │
-                        ▼
-                 Feature Generator
-                        │
-             ┌──────────┴──────────┐
-             │                     │
-             ▼                     ▼
-      Domain Alignment     Class Discrimination
-             │                     │
-             └──────────┬──────────┘
-                        │
-                        ▼
-               Dynamic Objective
-                  Balancing
-                        │
-                        ▼
-                Post Classification
-                        │
-               ┌────────┴────────┐
-               ▼                 ▼
-          Informative      Non-informative
+```text
+      SOURCE DOMAIN                           TARGET DOMAIN
+        CrisisMMD                                SCW2025
+      (Labeled Data)                         (Unlabeled Data)
+            │                                       │
+      ┌─────┴─────┐                           ┌─────┴─────┐
+      │           │                           │           │
+     Text       Image                        Text       Image
+      │           │                           │           │
+      └─────┬─────┘                           └─────┬─────┘
+            │                                       │
+            └───────────────┬───────────────────────┘
+                            │
+                            ▼
+                      CLIP Encoders
+                            │
+                            ▼
+                   Multi-Modal Features
+                            │
+                            ▼
+                    Feature Generator
+                            │
+               ┌────────────┴────────────┐
+               │                         │
+               ▼                         ▼
+        Domain Alignment         Class Discrimination
+               │                         │
+               └────────────┬────────────┘
+                            │
+                            ▼
+                    Dynamic Objective
+                        Balancing
+                            │
+                            ▼
+                   Post Classification
+                            │
+                 ┌──────────┴──────────┐
+                 ▼                     ▼
+            Informative           Non-informative
+```
 
 The image and text components of each post are encoded independently using a pretrained **CLIP ViT-L/14** model. The resulting representations are combined to obtain a joint multi-modal representation.
 
@@ -122,19 +124,22 @@ The shared representation is optimized using complementary objectives:
 The detailed formulation of these objectives is intentionally omitted while the associated research paper is under review.
 
 ---
+
 ## Multi-Modal Representation
 
 Each post is treated as an **image-text pair**, allowing the model to exploit complementary information from both modalities.
 
 A pretrained **CLIP ViT-L/14** model is used to generate modality-specific representations:
 
-    Text  ──> CLIP Text Encoder  ──> Text Embedding
-                                      │
-                                      │
-    Image ──> CLIP Image Encoder ──> Image Embedding
-                                      │
-                                      ▼
-                               Joint Representation
+```text
+   Text  ──> CLIP Text Encoder  ──> Text Embedding
+                                           │
+                                           │
+   Image ──> CLIP Image Encoder ──> Image Embedding
+                                           │
+                                           ▼
+                                   Joint Representation
+```
 
 The resulting image and text representations are combined before being passed to the domain adaptation framework.
 
@@ -144,21 +149,23 @@ The resulting image and text representations are combined before being passed to
 
 The project follows an **unsupervised domain adaptation** setting in which the source domain provides labeled examples while the target domain remains unlabeled during adaptation.
 
-    Labeled Source
-       CrisisMMD
-           │
-           │ Knowledge Transfer
-           ▼
-    ┌─────────────────┐
-    │     Domain      │
-    │    Adaptation   │
-    │    Framework    │
-    └─────────────────┘
-           ▲
-           │
-           │
-    Unlabeled Target
-       SCW2025
+```text
+   Labeled Source
+      CrisisMMD
+          │
+          │ Knowledge Transfer
+          ▼
+   ┌─────────────────┐
+   │     Domain      │
+   │   Adaptation    │
+   │   Framework     │
+   └─────────────────┘
+          ▲
+          │
+          │
+   Unlabeled Target
+      SCW2025
+```
 
 The framework uses adversarial learning to encourage domain-invariant representations while incorporating class-discriminative learning to preserve useful decision boundaries.
 
@@ -189,7 +196,6 @@ For target-domain evaluation, a randomly sampled subset of **128 image-text pair
 These annotations were used for target-domain evaluation and were not used during the domain adaptation training process.
 
 > The SCW2025 dataset is not redistributed in this repository.
-
 ---
 
 ## Preliminary Experiments
