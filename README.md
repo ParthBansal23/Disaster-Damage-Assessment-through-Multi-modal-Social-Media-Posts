@@ -97,6 +97,9 @@ flowchart TD
     C --> NI["Non-informative"]
 
 
+### Block 2 — Continue immediately after Block 1
+
+```markdown
 The image and text components of each post are encoded independently using a pretrained **CLIP ViT-L/14** model. The resulting representations are combined to obtain a joint multi-modal representation.
 
 The shared representation is optimized using complementary objectives:
